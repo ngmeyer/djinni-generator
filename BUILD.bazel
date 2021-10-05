@@ -1,13 +1,20 @@
-load("@io_bazel_rules_scala//scala:scala.bzl", "scala_binary")
+load("@io_bazel_rules_scala//scala:scala.bzl", "scala_binary", "scala_test")
 
 scala_binary(
     name = "djinni",
     srcs = glob(["src/main/scala/djinni/**/*.scala"]),
     main_class = "djinni.Main",
     deps = [
-        "@maven//:commons_io_commons_io",
         "@maven//:com_github_scopt_scopt_2_12",
+        "@maven//:commons_io_commons_io",
         "@maven//:org_scala_lang_modules_scala_parser_combinators_2_12",
         "@maven//:org_yaml_snakeyaml",
     ],
+)
+
+scala_test(
+    name = "test",
+    srcs = glob(["src/it/scala/djinni/**/*.scala"]),
+    deps = [":djinni"],
+    data = glob(["src/it/resources/**"]),
 )
