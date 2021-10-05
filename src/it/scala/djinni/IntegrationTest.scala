@@ -151,9 +151,6 @@ class IntegrationTest extends FunSpec {
     * @return command-line output of the executed djinni-cli
     */
   def djinniGenerate(idl: String): String = {
-    println("----------------------------------------------")
-    println(pwd)
-
     return djinni(djinniParams(idl))
   }
 
