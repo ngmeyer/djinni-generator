@@ -64,7 +64,16 @@ class IntegrationTest extends FunSpec {
     * @return command-line output of the executed djinni-cli
     */
   def djinni(parameters: String): String = {
-    "target/bin/djinni " + parameters !!
+    if (new java.io.File("target/bin/djinni").isFile) {
+      // assume this is a sbt it:test.
+      // this expect that sbt assembly has been executed, and the executable is there
+      "target/bin/djinni " + parameters !!
+    } else if (new java.io.File("djinni").isFile) {
+      // bazel build, or anything else. Expect to find djinni in the same directory
+      "djinni " + parameters !!
+    } else {
+      fail("djinni executable not found")
+    }
   }
 
   /**
@@ -132,6 +141,8 @@ class IntegrationTest extends FunSpec {
     return cmd
   }
 
+  def pwd = System.getProperty("user.dir")
+
   /**
     * Executes the djinni generator with the given idl-file as input.
     *
@@ -140,6 +151,9 @@ class IntegrationTest extends FunSpec {
     * @return command-line output of the executed djinni-cli
     */
   def djinniGenerate(idl: String): String = {
+    println("----------------------------------------------")
+    println(pwd)
+
     return djinni(djinniParams(idl))
   }
 
